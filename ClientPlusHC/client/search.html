@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Play Bubble.am, a free online multiplayer browser game. Eat smaller cells, avoid bigger ones, and climb the leaderboard. No download needed — play now!">
+    <meta name="keywords" content="bubbleam, bubble.am, bubleam, buble.am, bubbleam.pl, bubleroyal.com, bubleroyal, agario, agar, io, cell, cells, virus, bacteria, blob, game, games, web game, html5, fun, flash">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport"
+        content="minimal-ui, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="google-site-verification" content="LiPNDr3AHPS_HBWWsUkIL3tYU5vIMQYR17AD7fvhuN4" />
+
+    <title>Bubble.am</title>
+
+    <link rel="canonical" href="https://bubbleam.site/">
+    <meta property="og:title" content="Bubble.am — Free Bubble.am Browser Game">
+    <meta property="og:description" content="Play Bubble.am free online. Eat smaller cells, avoid bigger ones, climb the leaderboard. No download needed!">
+    <meta property="og:url" content="https://bubbleam.site/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Bubble.am — Free Bubble.am Browser Game">
+    <meta name="twitter:description" content="Play Bubble.am free online. Eat smaller cells, avoid bigger ones!">
+
+    <link id="favicon" rel="icon" type="image/png" href="assets/img/favicon.png" />
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="assets/css/index.css" rel="stylesheet">
+    <script src="assets/js/footer.js"></script>
+
+    <style>
+        #searchOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        td {
+            padding: 6px 4px;
+            border-bottom: 1px solid #eee;
+        }
+
+        td:first-child {
+            color: #000000;
+            width: 90px;
+        }
+
+        .search-tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+            gap: 2px;
+        }
+
+        .search-tab {
+            padding: 6px 14px;
+            font-size: 15px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            color: #347bb7;
+            background: transparent;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .search-tab.active {
+            background: #fff;
+            border-color: #ddd;
+            color: #333;
+            margin-bottom: -1px;
+            border-bottom: 1px solid #fff;
+        }
+
+        .search-tab:hover:not(.active) {
+            background: #f5f5f5;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        .search-row {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            padding: 0 15px;
+            margin: 0;
+            display: flex;
+        }
+
+        .search-row input {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 15px;
+            font-family: 'Arial', sans-serif;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+        }
+
+        .search-row input:focus {
+            border-color: #3c82f5;
+        }
+
+        .search-row button {
+            padding: 6px 12px;
+            background: #3c82f5;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-row button:hover {
+            background: #3c82f5;
+        }
+
+        .skin-wrap {
+            width: 50px;
+            height: 50px;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            background: #333;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .skin-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .status-premium {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-free {
+            color: #aaa;
+        }
+
+        .msg {
+            font-size: 13px;
+            color: #aaa;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .msg.error {
+            color: #e55;
+        }
+
+        .spinner-sm {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ddd;
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .match-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .match-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+
+    <div id="searchOverlay">
+        <div id="helloDialog">
+
+            <div style="font-size:14px; margin-bottom:10px;">
+                <a href="index.html">Bubble.am</a> » Search<span id="breadcrumbName"></span>
+            </div>
+
+            <div class="search-tabs">
+                <button class="search-tab active" onclick="switchTab('profile', this)">Profile</button>
+                <button class="search-tab" onclick="switchTab('top1', this)">Top 1</button>
+                <button class="search-tab" onclick="switchTab('2v2', this)">2 vs 2</button>
+                <button class="search-tab" onclick="switchTab('1v1', this)">1 vs 1</button>
+            </div>
+
+            <div id="tab-profile" class="tab-pane active">
+                <div id="profileContent">
+                    <div class="msg" style="color: #000000;">Type a player name above and press search.</div>
+                </div>
+            </div>
+
+            <div id="tab-top1" class="tab-pane">
+                <div id="top1Content" class="msg">Search a player first.</div>
+            </div>
+
+            <div id="tab-2v2" class="tab-pane">
+                <div id="2v2Content" class="msg">Search a player first.</div>
+            </div>
+
+            <div id="tab-1v1" class="tab-pane">
+                <div id="1v1Content" class="msg">Search a player first.</div>
+            </div>
+
+            <div class="search-row">
+                <input type="text" id="searchInput" placeholder="Search" onkeydown="if(event.key==='Enter') doSearch()">
+                <button onclick="doSearch()"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </div>
+
+            <div id="footer">
+                <div id="footerContainer"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://203.175.125.153';
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx.fillStyle = '#111';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 40) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += 40) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+        }
+
+        loadFooter('footerContainer');
+
+        function switchTab(name, el) {
+            document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            document.getElementById('breadcrumbName').textContent = ' » ' + query;
+            document.getElementById('profileContent').innerHTML = '<div class="msg"><span class="spinner-sm"></span>Searching...</div>';
+
+            fetch(`${API_URL}/search?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (!data.success || !data.user) {
+                        document.getElementById('profileContent').innerHTML = `<div class="msg error">PLAYER "<strong>${escHtml(query)}</strong>" NOT FOUND.</div>`;
+                        resetTabs();
+                        return;
+                    }
+                    renderProfile(data.user);
+                    fetchMatches(data.user.username);
+                })
+                .catch(() => {
+                    document.getElementById('profileContent').innerHTML = '<div class="msg error">Connection error. Please try again.</div>';
+                });
+        }
+
+        function renderProfile(u) {
+            const lastGame = u.last_login
+                ? timeSince(new Date(u.last_login)) + ' ago'
+                : (u.game || 'n/a');
+
+            const accountType = u.account_type === 'premium'
+                ? '<span class="status-premium">Premium</span>'
+                : '<span class="status-free">Free Account</span>';
+
+            const guildHtml = u.guild
+                ? `<a href="guild.html?id=${u.guild.id}" style="text-decoration:none;">${escHtml(u.guild.name)}</a>`
+                : 'n/a';
+
+            const ts = Math.floor(Date.now() / 60000);
+            const hasSkin = !!u.skin;
+            const hasGuildSkin = !!(u.guild && u.guild.skin);
+
+            let skinsHtml = '';
+            if (hasSkin || hasGuildSkin) {
+                skinsHtml = '<div style="display:flex; gap:14px; align-items:center; padding: 10px 4px; margin-top:10px;">';
+                if (hasGuildSkin) skinsHtml += `<div style="width:100px;height:100px;border-radius:50%;overflow:hidden;border:2px solid #ddd;background:#555;"><img src="skins/${u.guild.skin}.png?v=${ts}" style="width:100%;height:100%;object-fit:cover;"></div>`;
+                if (hasSkin) skinsHtml += `<div style="width:100px;height:100px;border-radius:50%;overflow:hidden;border:2px solid #ddd;background:#333;"><img src="skins/${u.skin}.png?v=${ts}" style="width:100%;height:100%;object-fit:cover;"></div>`;
+                skinsHtml += '</div>';
+            }
+
+            document.getElementById('profileContent').innerHTML = `
+                <table>
+                    <tr><td>Name:</td><td>${escHtml(u.username)}</td></tr>
+                    <tr><td>Level:</td><td>${u.level ?? '-'}</td></tr>
+                    <tr><td>Points:</td><td>${u.points != null ? parseFloat(u.points).toFixed(2) : '-'}</td></tr>
+                    <tr><td>Guild:</td><td>${guildHtml}</td></tr>
+                    <tr><td>Game:</td><td>${lastGame}</td></tr>
+                    <tr><td>Status:</td><td>${accountType}</td></tr>
+                </table>
+                ${skinsHtml}
+            `;
+        }
+
+        function fetchMatches(username) {
+            ['top1Content', '2v2Content', '1v1Content'].forEach(id => {
+                document.getElementById(id).innerHTML = '<div class="msg"><span class="spinner-sm"></span>Loading...</div>';
+            });
+            fetchMatchType(username, 'top1', 'top1Content');
+            fetchMatchType(username, '2v2', '2v2Content');
+            fetchMatchType(username, '1v1', '1v1Content');
+        }
+
+        function fetchMatchType(username, mode, elId) {
+            fetch(`${API_URL}/matches?username=${encodeURIComponent(username)}&mode=${mode}`)
+                .then(r => r.json())
+                .then(data => {
+                    const el = document.getElementById(elId);
+                    if (!data.success || !data.matches || !data.matches.length) {
+                        el.innerHTML = '<div class="msg">No matches found.</div>';
+                        return;
+                    }
+                    el.innerHTML = data.matches.map(m => {
+                        const serverName = m.opponent
+                            ? (m.opponent.includes('/ws/hc') ? 'Hardcore' : m.opponent.includes('/ws/x5') ? 'x5' : m.opponent.split('—')[0].trim())
+                            : '-';
+                        const mins = m.opponent && m.opponent.includes('—')
+                            ? m.opponent.split('—')[1].trim()
+                            : '';
+                        return `
+    <div class="match-item" style="display:grid; grid-template-columns:80px 1fr 90px; align-items:center;">
+        <span style="color:#888;">${timeSince(new Date(m.date))} ago</span>
+        <span style="font-weight:bold; color:#333;">${serverName}</span>
+        <span style="color:#337ab7; font-weight:bold; text-align:right;">${mins}</span>
+    </div>
+`;
+                    }).join('');
+                })
+                .catch(() => {
+                    document.getElementById(elId).innerHTML = '<div class="msg error">Failed to load.</div>';
+                });
+        }
+
+        function resetTabs() {
+            ['top1Content', '2v2Content', '1v1Content'].forEach(id => {
+                document.getElementById(id).innerHTML = '<div class="msg">Search a player first.</div>';
+            });
+        }
+
+        function timeSince(date) {
+            const sec = Math.floor((new Date() - date) / 1000);
+            if (sec < 60) return sec + 's';
+            const min = Math.floor(sec / 60);
+            if (min < 60) return min + ' min';
+            const hr = Math.floor(min / 60);
+            if (hr < 24) return hr + 'h';
+            const d = Math.floor(hr / 24);
+            return d + ' day' + (d !== 1 ? 's' : '');
+        }
+
+        function escHtml(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        const params = new URLSearchParams(location.search);
+        if (params.get('q')) {
+            document.getElementById('searchInput').value = params.get('q');
+            doSearch();
+        }
+    </script>
+</body>
+
+</html>
